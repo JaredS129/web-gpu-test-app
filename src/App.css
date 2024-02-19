@@ -13,6 +13,12 @@
   }
 }
 
+.three-container {
+  display: block;
+  width: 300; /* 50% of the viewport width */
+  height: 70vh; /* 50% of the viewport height */
+}
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
