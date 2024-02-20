@@ -1,68 +1,52 @@
-import React, { useEffect, useRef } from "react";
-import logo from "./logo.svg";
 import "./App.css";
-import * as THREE from "three";
-import WebGPURenderer from "three/examples/jsm/renderers/webgpu/WebGPURenderer";
+import { useRef, useState } from "react";
+import { OrbitControls, Splat } from "@react-three/drei";
+import { useFrame, Canvas } from "@react-three/fiber";
+
+// New component to use the useFrame hook
+function AnimatedScene() {
+  const orbitRef = useRef(null);
+  const [lastPosition, setLastPosition] = useState("");
+
+  // This hook can now correctly access R3F context since it's used within a child of Canvas
+  useFrame((state) => {
+    const camera = state.camera;
+    const currentPosition = JSON.stringify(camera.position.toArray());
+    if (currentPosition !== lastPosition) {
+      console.log("Camera position changed:", camera.position.toArray());
+      setLastPosition(currentPosition);
+    }
+  });
+
+  return (
+    <>
+      <Splat src={`/me2.splat`} position={[0, 0, 0]} scale={2} />
+      <OrbitControls ref={orbitRef} />
+      <ambientLight intensity={0.5} />
+      <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
+      <pointLight position={[-10, -10, -10]} />
+    </>
+  );
+}
 
 function App() {
   const browserIsWebGPUEnabled = window.navigator.gpu ? true : false;
-  const headerRef = useRef(null); // Create a ref for the header
-
-  useEffect(() => {
-    if (!browserIsWebGPUEnabled) {
-      console.log("WebGPU is not enabled in your browser.");
-      return;
-    }
-
-    // Initialize the scene, camera, and renderer
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(
-      75,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      1000
-    );
-
-    const renderer = new WebGPURenderer();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-
-    // Append the renderer's canvas to the header element
-    if (headerRef.current) {
-      (headerRef.current as HTMLElement).appendChild(renderer.domElement);
-    }
-
-    const geometry = new THREE.OctahedronGeometry(1);
-    const material = new THREE.MeshBasicMaterial({ color: 0x61dafb });
-    const cube = new THREE.Mesh(geometry, material);
-    scene.add(cube);
-
-    camera.position.z = 5;
-
-    const animate = function () {
-      requestAnimationFrame(animate);
-
-      cube.rotation.x += 0.01;
-      cube.rotation.y += 0.01;
-
-      renderer.render(scene, camera);
-    };
-
-    animate();
-  }, [browserIsWebGPUEnabled]); // Empty dependency array means this effect runs once on mount
 
   return (
     <div className="App">
       <header className="App-header">
-        <div ref={headerRef} className="three-container"></div>
-        <p>GPU enabled: {browserIsWebGPUEnabled ? "true" : "false"}</p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+        <Canvas
+          camera={{
+            position: [
+              -1.371294187025076, 0.17211949426393394, 0.3114633625316161,
+            ],
+            fov: 50,
+          }}
+          style={{ height: "50rem" }}
         >
-          Learn React
-        </a>
+          <AnimatedScene />
+        </Canvas>
+        <p>CLICK AND DRAG</p>
       </header>
     </div>
   );
