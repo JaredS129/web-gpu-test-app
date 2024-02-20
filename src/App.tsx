@@ -20,7 +20,11 @@ function AnimatedScene() {
 
   return (
     <>
-      <Splat src={`/me2.splat`} position={[0, 0, 0]} scale={2} />
+      <Splat
+        src={`https://huggingface.co/datasets/JaredS129/gaussian-splats/resolve/main/me2.splat`}
+        position={[0, 0, 0]}
+        scale={2}
+      />
       <OrbitControls ref={orbitRef} />
       <ambientLight intensity={0.5} />
       <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
