@@ -30,7 +30,7 @@ function AnimatedScene() {
 }
 
 function App() {
-  const browserIsWebGPUEnabled = window.navigator.gpu ? true : false;
+  // const browserIsWebGPUEnabled = window.navigator.gpu ? true : false;
 
   return (
     <div className="App">
