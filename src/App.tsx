@@ -2,6 +2,14 @@ import "./App.css";
 import { useRef, useState } from "react";
 import { OrbitControls, Splat } from "@react-three/drei";
 import { useFrame, Canvas } from "@react-three/fiber";
+import { Slider, Switch, Button, Typography, Card, Row, Col } from "antd";
+declare global {
+  interface Window {
+    max: any;
+  }
+}
+
+const { max } = window;
 
 // New component to use the useFrame hook
 function AnimatedScene() {
@@ -34,11 +42,32 @@ function AnimatedScene() {
 }
 
 function App() {
-  // const browserIsWebGPUEnabled = window.navigator.gpu ? true : false;
+  const { Title } = Typography;
+  const [sliderValue, setSliderValue] = useState(30);
+
+  const handleSliderChange = (value: number) => {
+    max.outlet(`Slider: ${value}`);
+    setSliderValue(value);
+  };
 
   return (
-    <div className="App">
-      <header className="App-header">
+    <>
+      <div className="App bg">
+        <Title
+          level={1}
+          type="success"
+          style={{
+            color: "white",
+            border: "2px solid #1677ff",
+            padding: "0.2rem 1rem 0.5rem 1rem",
+            borderRadius: "0.5rem",
+          }}
+        >
+          React x Max
+        </Title>
+        <Title level={4} style={{ color: "white" }}>
+          Click & drag my face
+        </Title>
         <Canvas
           camera={{
             position: [
@@ -46,13 +75,38 @@ function App() {
             ],
             fov: 50,
           }}
-          style={{ height: "50rem" }}
+          style={{ height: "20rem" }}
         >
           <AnimatedScene />
         </Canvas>
-        <p>CLICK AND DRAG</p>
-      </header>
-    </div>
+        <Card className="inputs" title="Max output">
+          <Row>
+            <Col span={8}>
+              <Button
+                type="primary"
+                onClick={() => {
+                  max.outlet("Button: Clicked");
+                }}
+              >
+                Primary Button
+              </Button>
+            </Col>
+            <Col span={8}>
+              <Slider
+                defaultValue={30}
+                value={sliderValue}
+                onChange={handleSliderChange}
+              />
+            </Col>
+            <Col span={8}>
+              <Switch
+                onChange={(checked) => max.outlet(`Switch: ${checked}`)}
+              />
+            </Col>
+          </Row>
+        </Card>
+      </div>
+    </>
   );
 }
 
