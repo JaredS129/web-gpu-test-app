@@ -44,11 +44,24 @@ function AnimatedScene() {
 function App() {
   const { Title } = Typography;
   const [sliderValue, setSliderValue] = useState(30);
+  const [toggleValue, setToggleValue] = useState(false);
 
   const handleSliderChange = (value: number) => {
-    max.outlet(`Slider: ${value}`);
+    max.outlet(value);
     setSliderValue(value);
   };
+
+  const handleToggleChange = (value: boolean) => {
+    max.outlet(value);
+  };
+
+  max.bindInlet("slider", function (value: number) {
+    setSliderValue(value);
+  });
+
+  max.bindInlet("toggle", function (value: boolean) {
+    setToggleValue(value);
+  });
 
   return (
     <>
@@ -99,9 +112,7 @@ function App() {
               />
             </Col>
             <Col span={8}>
-              <Switch
-                onChange={(checked) => max.outlet(`Switch: ${checked}`)}
-              />
+              <Switch onChange={handleToggleChange} checked={toggleValue} />
             </Col>
           </Row>
         </Card>
